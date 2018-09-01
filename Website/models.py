@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 #from django.contrib.contenttypes.models import ContentType
 
@@ -7,14 +8,12 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
 	COURSES = (
-		('Select course', '-'),
 		('Btech', 'Btech'),
-		('Mtech', 'Mtect'),
+		('Mtech', 'Mtech'),
 		('MCA', 'MCA'),
 	)
 
 	ACCOUNTS = (
-			('Select account', '-'),
 			('Admin', 'Admin'),
 			('Student', 'Student'),
 	)	
@@ -56,22 +55,30 @@ class Item(models.Model):
 
 
 class CartItem(models.Model):
-	cart_present = models.ForeignKey(UserProfile)
+	cart_present = models.ForeignKey(User)
 	item = models.ForeignKey(Item)
+
+	def __str__(self):
+		return self.item.name
 
 
 class Transactions(models.Model):
 	transaction_id = models.IntegerField(primary_key=True)
-	transaction_date = models.DateField(null=True)
+	transaction_date = models.DateField(null=True, default=datetime.date.today)
 	items_included = models.IntegerField()
+
+	def __str__(self):
+		return str(self.pk)
 
 
 class ItemSold(models.Model):
 	selling_id = models.IntegerField(primary_key=True)
 	item = models.ForeignKey(Item, on_delete=models.CASCADE)
 	transaction = models.ForeignKey(Transactions, on_delete=models.CASCADE)
-	sell_date = models.DateField(null=True)
+	sell_date = models.DateField(null=True, default=datetime.date.today)
 
+	def __str__(self):
+		return self.item.name
 
 class Review(models.Model):
 	title = models.CharField(max_length=30)

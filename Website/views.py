@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse, render_to_response  
-from .models import Item, Review, User
+from .models import Item, Review, User, Transactions, CartItem, ItemSold, UserProfile
 from .forms import UserForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
 from django.views.generic import View
-from utilities import Arduino_call
+import datetime
 
 # Create your views here.
 
@@ -67,8 +67,11 @@ class register(View):
 
 def add_to_cart(request, pk):
     product = Item.objects.get(pk=pk)
-    cart = Cart(request)
-    cart.add(product, product.unit_price, 1)
+
+    cartItem = CartItem()
+    cartItem.item = product
+    cartItem.cart_present = request.user
+    cartItem.save()
 
     return redirect('show_cart')
 
@@ -82,96 +85,43 @@ def remove_from_cart(request, pk):
 
 
 def get_cart(request):
-    cart = Cart(request)
+    cart = CartItem.objects.filter(cart_present = request.user)
 
-    pay = 0
-    for item in cart:
-        pay += int(item.total_price)
+    total_cost = 0
+    for product in cart:
+        total_cost += product.item.unit_price
 
-    return render(request, 'Website/show_cart.html', {'pay': str(pay), 'cart': Cart(request)})
+    # print cart
+
+    return render(request, 'Website/show_cart.html', {'pay': str(total_cost), 'cart': cart})
 
 
 def thanks_buy(request, pk):
     item = get_object_or_404(Item, pk=pk)
 
-    if item.xcord == 0:
-        print "Sorry, I do not know where it is. Need to scan and search"
-        return redirect('index')
-    else:
-        item.quantity -= 1
-        item.save()
+    item.quantity -= 1
+    item.save()
 
-        with open('position.txt', 'r') as f:
-            coords = f.read(2)
-        xpos = int(coords[0])
-        ypos = int(coords[1])
+    t = Transactions()
+    t.transaction_id = len(Transactions.objects.all())
+    t.items_included = 1
+    t.save()
 
-        qr = Arduino_call.go_to_product(xpos, ypos, item.xcord, item.ycord)
+    it = ItemSold()
+    it.selling_id = len(ItemSold.objects.all())
+    it.item = item
+    it.transaction = t
+    it.save()
 
-        if qr == item.QRcode:
-                print 'Found '+item.name
-                return render(request, 'Website/thanks_buy.html', {'item': item})
-        else:
-            print 'Unexpected product'
-            item.ycord = 0
-            item.xcord = 0
-            item.save()
-
-            new_item = Item.objects.get(QRcode=qr)
-            new_item.ycord = item.ycord
-            new_item.xcord = item.xcord
-            new_item.save()
-
-            print new_item.name+' is '+' present here, not '+item.name
-
-        with open('position.txt', 'w') as f:
-            f.write(str(new_item.xcord))
-            f.write(str(new_item.ycord))
-
-        return redirect('index')
+    return render(request, 'Website/thanks_buy.html', {'item': item})
 
 
 def thanks_cart(request, cost):
-    cart = Cart(request)
-    flag = 0
-    for item in cart:
-        prod = Item.objects.get(name=item.product.name)
+    pass
 
-        if prod.xcord == 0:
-            print "Sorry, I do not know where this is. Need to search and scan."
-            return redirect('index')
-        else:
-            with open('position.txt', 'r') as f:
-                coords = f.read(2)
-            xpos = int(coords[0])
-            ypos = int(coords[1])
-            
-            qr = Arduino_call.go_to_product(xpos, ypos, item.product.xcord, item.product.ycord)
-            
-            if qr == item.product.QRcode:
-                print 'Found '+item.product.name
-            else:
-                flag = 1
-                break
-                print 'Unexpected product'
-                to_remove = Item.objects.get(name=item.product.name)
-                to_remove.ycord = 0
-                to_remove.xcord = 0
-                to_remove.save()
-
-                new_item = Item.objects.get(QRcode=qr)
-                new_item.ycord = item.product.ycord
-                new_item.xcord = item.product.xcord
-                new_item.save()
-
-                print new_item.name+' is '+' present here, not '+item.product.name
-
-            with open('position.txt', 'w') as f:
-                f.write(str(prod.xcord)+str(prod.ycord))
-    if flag == 0:
-        return render(request, 'Website/thanks_cart.html', {'cart': cart, 'cost': cost})
-    else:
-        return render(request, 'Website/no_product.html', {})
+    #     return render(request, 'Website/thanks_cart.html', {'cart': cart, 'cost': cost})
+    # else:
+    #     return render(request, 'Website/no_product.html', {})
 
 
 

@@ -9,16 +9,16 @@
 	    <table class='table table-responsive table-striped'>
 	        <tr>
 	            <th>Product</th>
-	            <th>Quantity</th>
+	            <!-- <th>Quantity</th> -->
 	            <th>Total Price</th>
 	            <th>Remove Item</th>
 	        </tr>
 	        {% for item in cart %}
 	        <tr>
-	            <td>{{ item.product.name }}</td>
-	            <td>{{ item.quantity }}</td>
-	            <td>{{ item.total_price }}</td>
-	            <td><a href="{% url 'remove_from_cart' item.product.pk %}" class='btn btn-primary'>Click to remove</a></td>
+	            <td>{{ item.item.name }}</td>
+	            <!-- <td>{{ item.quantity }}</td> -->
+	            <td>{{ item.item.unit_price }}</td>
+	            <td><a href="{% url 'remove_from_cart' item.pk %}" class='btn btn-primary'>Click to remove</a></td>
 	        </tr>
 	        {% endfor %}
 	    </table>
