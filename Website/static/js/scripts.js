@@ -46,6 +46,20 @@ function verifyRegForm()
 		alert("Username already taken.");
 }
 
+
+function buyItem()
+{
+	$.ajax({
+	        url: "",
+	        type: 'GET',
+	        dataType: 'json', // added data type
+	        success: function(res) {
+	            console.log(res);
+	            alert(res);
+	        }
+	    });
+}
+
 function verifyNumber()
 {
 	var target = document.getElementById('numb').value;
@@ -59,6 +73,7 @@ function verifyNumber()
 	else
 	{
 		target1.innerHTML = "Done";
+
 		document.getElementById('disbtn').className += " hidden";
 	}
 }

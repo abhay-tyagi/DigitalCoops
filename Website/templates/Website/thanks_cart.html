@@ -19,10 +19,10 @@
 						</tr>
 					</thead>
 					<tbody>
-					{% for item in cart %}
+					{% for item in items %}
 						<tr>
-							<td>{{item.product.name}}</td>
-							<td>${{item.total_price}}</td>
+							<td>{{item.item.name}}</td>
+							<td>${{item.item.unit_price}}</td>
 						</tr>
 					{% endfor %}
 					</tbody>

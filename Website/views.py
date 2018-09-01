@@ -77,9 +77,10 @@ def add_to_cart(request, pk):
 
 
 def remove_from_cart(request, pk):
-    product = Item.objects.get(pk=pk)
-    cart = Cart(request)
-    cart.remove(product)
+    # product = Item.objects.get(pk=pk)
+
+    to_remove = CartItem.objects.get(pk=pk)
+    to_remove.delete()
 
     return redirect('show_cart')
 
@@ -90,8 +91,6 @@ def get_cart(request):
     total_cost = 0
     for product in cart:
         total_cost += product.item.unit_price
-
-    # print cart
 
     return render(request, 'Website/show_cart.html', {'pay': str(total_cost), 'cart': cart})
 
@@ -117,17 +116,14 @@ def thanks_buy(request, pk):
 
 
 def thanks_cart(request, cost):
-    pass
+    items = CartItem.objects.filter(cart_present=request.user)
 
-    #     return render(request, 'Website/thanks_cart.html', {'cart': cart, 'cost': cost})
-    # else:
-    #     return render(request, 'Website/no_product.html', {})
-
+    return render(request, 'Website/thanks_cart.html', {'items': items, 'cost': cost})
 
 
 def clear_cart(request):
-    cart = Cart(request)
-    cart.clear()
+
+    CartItem.objects.filter(cart_present=request.user).delete()
 
     return render(request, 'Website/clear_cart.html', {})
 
@@ -138,13 +134,16 @@ def contact_us(request):
 def search(request):
     if request.method == 'GET': 
         sq = request.GET.get('search', None)
+
         items = Item.objects.filter(name__icontains=sq)
 
         users = User.objects.all()
-
-        print items
 
         if items:
             return render(request,'Website/search_result.html', {'items':items})
         else:
             return render(request, 'Website/search_none.html', {})
+
+
+def viewHistory(request):
+    pass

@@ -50,6 +50,12 @@
 							My Cart
 						</a>
 					</li>
+					<li>
+						<a href='{% url "viewHistory" %}'>
+							<span class='glyphicon glyphicon-shopping-bag' aria-hidden='true'></span>&nbsp;
+							Transaction History
+						</a>
+					</li>
 					{% else %}
 						<li>
 							<a href='{% url "contact_us" %}'>
