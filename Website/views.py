@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
 from django.views.generic import View
-from utilities import Arduino_call
 
 # Create your views here.
 

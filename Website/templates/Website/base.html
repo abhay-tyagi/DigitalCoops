@@ -17,32 +17,35 @@
 	<script src="/static/js/scripts.js"></script>
 	{% block title %}
 	{% endblock %}
+	<style>
+		body{
+			background-image:url('/static/images/bg_img.png');
+			background-position:45% 60%;
+			background-repeat:no-repeat;
+		}
+  </style>
 </head>
 
 <body>
-	<div class='container-fluid' id='navbarhome'>
-		<nav class='navbar navbar-inverse navbar-fixed-top'>
-			<div class='navbar-header'>
-				<button type='button' class='navbar-toggle' target='#topnavbar'>
-					<span class='icon-bar'></span>
-					<span class='icon-bar'></span>
-					<span class='icon-bar'></span>
-				</button>
-				{% if user.is_authenticated %}
-					<a class='navbar-brand' href='{% url "index" %}'>{{user.username}}</a>
-				{% else %}
-					<a class='navbar-brand' href='{% url "index" %}'>Paradise</a>
-				{% endif %}
-			</div>
-
+	<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span> 
+		</button>
+		<a class="navbar-brand" href="#">Digital Coops</a>
+	</div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="#">Home</a></li>
+			<li><a href="#">Page 1</a></li>
+			<li><a href="#">Contact Us</a></li> 
+		</ul>
+     <ul class="nav navbar-nav navbar-right">
 			<div class='collapse navbar-collapse' id='topnavbar'>
-				<ul class='nav navbar-nav'>
-					<li>
-						<a href='{% url "index" %}'>
-							<span class='glyphicon glyphicon-home' aria-hidden='true'></span>&nbsp;
-							Home
-						</a>
-					</li>
+				<ul class='nav navbar-nav navbar-left'>
 					{% if user.is_authenticated %}
 					<li>
 						<a href='{% url "show_cart" %}'>
@@ -50,60 +53,73 @@
 							My Cart
 						</a>
 					</li>
-					{% else %}
-						<li>
-							<a href='{% url "contact_us" %}'>
-								<span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>&nbsp;
-								Contact Us
-							</a>
-						</li>
 					{% endif %}
-					
-					{% if user.is_authenticated %}
-                    <li>
-                        <form class='navbar-form' style='margin-left: 100px;' action="{% url 'search' %}" method="get">
-                            <input class='form-control' type="text" name="search">
-                            <button class='btn btn-info' class="form-control">Search</button>
-                        </form>
-                    </li>
-                    {% endif %}
 				</ul>
+				<ul class='nav navbar-nav navbar-right'>
 					{% if user.is_authenticated %}
-					<ul class='nav navbar-nav navbar-right'>
+						{% if user.is_authenticated %}
 						<li>
-							<a href='{% url "contact_us" %}'>
-								<span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>&nbsp;
-								Contact Us
-							</a>
+						<form class="navbar-form navbar-left" action="{% url 'search' %}" method="get">
+							<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search" name="search">
+							<div class="input-group-btn">
+								<button class="btn btn-default" type="submit">
+								<i class="glyphicon glyphicon-search"></i>
+								</button>
+							</div>
+							</div>
+						</form>
 						</li>
+                    {% endif %}
 						<li id='logout'>
 							<a href='{% url "logout"%}?next={{request.path}}'>
-								<span class='glyphicon glyphicon-off' aria-hidden='true'></span>&nbsp;
+								<span class="glyphicon glyphicon-log-out"></span> Log out</a>
 								Logout
 							</a>
 						</li>
-					</ul>
 					{% else %}
-						<form name ='loginform' id='login_form' class='navbar-form navbar-right' role='form' method='post' action='/login/'>
-						{% csrf_token %}
-			                <div class='input-group'>
-			                  <span class='input-group-addon'><i class='glyphicon glyphicon-user'></i></span>
-			                  <input autocomplete='off' id='username' type='text' class='form-control' name='username' placeholder='Username'>                                        
-			                </div>
-
-			                <div class='input-group'>
-			                  <span class='input-group-addon'><i class='glyphicon glyphicon-lock'></i></span>
-			                  <input autocomplete='off' id='password' type='password' class='form-control' name='password' placeholder='Password'>                                        
-			                </div>
-
-			                <button onclick='verifyForm()' type='submit' class='btn btn-success' id='logbtn'>Login</button>
-			                <input type="hidden" name="next" value="{{ request.path }}">
-	              		</form>
+						<li><a href="#" data-target="#login" data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 					{% endif %}
+					</ul>
 			</div>
 		</nav>
+		
+					<div class="container">
+							<!-- Modal -->
+							<div class="modal fade" id="login" role="dialog">
+					<div class="modal-dialog">
+    
+							<!-- Modal content-->
+						<div class="modal-content">
+								<div class="modal-header" style="padding:35px 50px;">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4><span class="glyphicon glyphicon-lock"></span> Login</h4>
+								</div>
+						
+							{% csrf_token %}
+							<div class="modal-body" style="padding:40px 50px;">
+							<form class="navbar-form navbar-left" name ='loginform' id='login_form' role="form" method='post' action='/login/'>
+							<div class="form-group">
+								<label for="usrname"><span class="glyphicon glyphicon-user"></span> Username</label>
+								<input type="text" class="form-control" id="usrname" placeholder="Enter email">
+							</div>
+							<div class="form-group">
+								<label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
+								<input type="text" class="form-control" id="psw" placeholder="Enter password">
+							</div>
+							<div class="checkbox">
+								<label><input type="checkbox" value="" checked>Remember me</label>
+							</div>
+							<button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login</button>
+							
+							</form>
+							</div>
+						</div>
+      
+						</div>
+					</div> 
+			</div>
 	</div>
-
 	{% block content %}
 	{% endblock %}
 
@@ -117,9 +133,9 @@
 
 			<div class="footer-left">
 				<p id='time'></p>
-				<h4 style="color:white;">Paradise Shopping &copy;</h4>
+				<h4 style="color:white;">Digital Coops&copy;</h4>
 			</div>
-		</footer>
+	</footer>
 		
 </body>
 </html>
