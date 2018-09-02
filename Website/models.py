@@ -29,15 +29,21 @@ class UserProfile(models.Model):
 	    return self.user.username
 
 
+class Category(models.Model):
+	name = models.CharField(max_length=50)
+
+	def __str__(self):
+		return self.name
+
 class Item(models.Model):
-	CATEGORIES = (
-		('Select category', '-'),
-		('Stationary', 'Stationary'),
-		('Eatables', 'Eatables'),
-	)
+	# CATEGORIES = (
+	# 	('Select category', '-'),
+	# 	('Stationary', 'Stationary'),
+	# 	('Eatables', 'Eatables'),
+	# )
 
 	name = models.CharField(max_length=50)
-	category = models.CharField(max_length=50, choices=CATEGORIES, default='-')
+	category = models.ForeignKey(Category)
 	quantity = models.IntegerField()
 	pic = models.FileField(upload_to = 'images/', null=True, blank=True)
 	specs = models.TextField()
@@ -64,6 +70,7 @@ class CartItem(models.Model):
 
 class Transactions(models.Model):
 	transaction_id = models.IntegerField(primary_key=True)
+	user = models.ForeignKey(User, null=True)
 	transaction_date = models.DateField(null=True, default=datetime.date.today)
 	items_included = models.IntegerField()
 

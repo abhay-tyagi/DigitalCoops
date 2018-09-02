@@ -39,7 +39,7 @@ function verifyRegForm()
 	if(document.forms['regform']['username'].value == "")
 		alert("Please enter unique username");
 	else if(document.forms['regform']['email'].value == "")
-		alert("PLease enter email");
+		alert("Please enter email");
 	else if(document.forms['regform']['password'].value == "")
 		alert("Please enter password");
 	else
@@ -67,9 +67,11 @@ function verifyNumber()
 
 
 	if(target == "" || target == 0)
-		alert("PLease choose quantity");
+		alert("Please choose quantity");
 	else if(Number(target) > Number(document.getElementById('maxiq').innerHTML))
 		alert("Insufficient stock. Reduce quantity");
+	else if(Number(target) < 0)
+		alert("Invalid quantity");
 	else
 	{
 		target1.innerHTML = "Done";

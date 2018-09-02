@@ -4,7 +4,31 @@
 	<title>{{item.name}}</title>
 {% endblock %}
 
+{% block bal %}
+{{ bal.wallet_balance }}
+{% endblock %}
+
 {% block content %}
+
+<!--     <form action="/charge" method="POST">
+        <script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="rzp_test_WyK93y9mvps7SN"
+            data-amount="5100"
+            data-name="Daft Punk"
+            data-description="Purchase Description"
+            data-image="vk.jpg"
+            data-netbanking="true"
+            data-description="Tron Legacy"
+            data-prefill.name="Harshil Mathur"
+            data-prefill.email="harshil@razorpay.com"
+            data-prefill.contact="9999999999"
+            data-notes.shopping_order_id="21">
+        </script>
+        <input type="hidden" name="shopping_order_id" value="21">
+</form> -->
+
+
 	<div class='container' id='list'>
 		<div class='row'>
 
@@ -42,7 +66,7 @@
 							<td id='maxiq'>{{item.quantity}}</td>
 							<td>
 								<input id='numb'>
-								<button id='disbtn' class='button' onclick="verifyNumber()"><span id='verbtn'>Confirm</span></button>
+								<!-- <button id='disbtn' class='button' onclick="verifyNumber()"><span id='verbtn'>Confirm</span></button> -->
 							</td>
 						</tr>
 					</tbody>
@@ -98,7 +122,8 @@
 
 		<div class='row'>
 			<div class='col-sm-5'>
-				<form method="GET" role='form'>
+				<form method="POST" role='form'>
+						{% csrf_token %}
 					<div class='form-group'>
 						<label for="comment"><span id='write'>Write a review:</span></label>
 					</div> 
@@ -201,7 +226,7 @@
 				</div>
 			</div>
 			<script type="text/javascript">
-				document.getElementById('confirmModal').addEventListener('mouseover', calcTotal);
+				document.getElementById('confirmModal').addEventListener('mouseover', calcTotal); 
 			</script>
 		</div>
 	</div>
