@@ -43,7 +43,7 @@ class Item(models.Model):
 	# )
 
 	name = models.CharField(max_length=50)
-	category = models.ForeignKey(Category)
+	category = models.ForeignKey(Category, on_delete=models.CASCADE)
 	quantity = models.IntegerField()
 	pic = models.FileField(upload_to = 'images/', null=True, blank=True)
 	specs = models.TextField()
@@ -61,8 +61,8 @@ class Item(models.Model):
 
 
 class CartItem(models.Model):
-	cart_present = models.ForeignKey(User)
-	item = models.ForeignKey(Item)
+	cart_present = models.ForeignKey(User, on_delete=models.CASCADE)
+	item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return self.item.name
@@ -70,7 +70,7 @@ class CartItem(models.Model):
 
 class Transactions(models.Model):
 	transaction_id = models.IntegerField(primary_key=True)
-	user = models.ForeignKey(User, null=True)
+	user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 	transaction_date = models.DateField(null=True, default=datetime.date.today)
 	items_included = models.IntegerField()
 

@@ -7,7 +7,7 @@ from django.views import generic
 from django.views.generic import View
 import datetime
 import decimal
-import razorpay
+# import razorpay
 
 # rzp_test_P68ddsgPlfy2P5
 # RjEhOFKOqmtKMVXomEVFwUSd
@@ -42,6 +42,7 @@ def browsehome(request):
 def item_details(request, pk):
     item = get_object_or_404(Item, pk=pk)
     if request.method == 'GET':
+
         reviews = Review.objects.filter(product=item).order_by('-review_date')
 
         loggedIn = []
@@ -250,7 +251,7 @@ def viewHistory(request):
     except Exception as e:
         pass
 
-    allTrans = Transactions.objects.filter(user=request.user).order_by('-transaction_date')
+    allTrans = Transactions.objects.filter(user=request.user).order_by('transaction_date')
 
     # print allTrans
 
@@ -259,7 +260,7 @@ def viewHistory(request):
         itemsInTrans = ItemSold.objects.filter(transaction=trans)
         trans_dict[trans] = itemsInTrans
 
-    print trans_dict
+    # print trans_dict
 
     return render(request, 'Website/viewHistory.html', {'allTrans': trans_dict, 'bal': loggedIn})
 
@@ -305,11 +306,11 @@ def add_category(request):
 def administration(request):
     if request.method == 'POST':
         event_form = EventForm(request.POST, request.FILES)
-        print event_form 
+        # print event_form 
         if event_form.is_valid():
-            print "there"
+            # print "there"
             prod = event_form.save(commit=False)
-            prod.item_id = len(Item.objects.all())
+            prod.item_id = len(Item.objects.all()) + 100
             prod.save()
 
         # print "where"
@@ -338,7 +339,7 @@ def sell_history(request):
 
         trans_dict[trans] = itemsInTrans
 
-    print total
+    # print total
 
     return render(request, 'Website/sell_history.html', {'allTrans': trans_dict, 'total': total})
 
